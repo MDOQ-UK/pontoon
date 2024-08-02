@@ -1,0 +1,22 @@
+{
+    "name": "mdoq/pontoon",
+    "type": "project",
+    "require": {
+        "symfony/console": "^7.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.3",
+        "phpstan/phpstan": "^1.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mdoq\\Pontoon\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Adam",
+            "email": "adam.crossland@zero1.co.uk"
+        }
+    ]
+}
