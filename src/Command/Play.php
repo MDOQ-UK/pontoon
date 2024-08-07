@@ -33,11 +33,9 @@ class Play extends Command
         // Create a new game for the player
         $playerGame = new Pontoon($deck);
 
+        // You start with 2 cards, not one as in the original code
         $playerGame->twist();
-        $game = new Pontoon(new Deck());
-        $game->twist();
-
-        $this->displayHand($output, $game);
+        $playerGame->twist();
 
         $question = new ChoiceQuestion(
             'Stick or Twist?',
