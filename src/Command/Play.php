@@ -26,6 +26,14 @@ class Play extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Game started!');
+
+        // Create a single deck to be used in both the player and the dealer games
+        $deck = new Deck();
+
+        // Create a new game for the player
+        $playerGame = new Pontoon($deck);
+
+        $playerGame->twist();
         $game = new Pontoon(new Deck());
         $game->twist();
 
@@ -38,25 +46,28 @@ class Play extends Command
         $question->setErrorMessage('action %s is invalid.');
         $helper = $this->getHelper('question');
 
-        while(!$game->isBust()){
+        while(!$playerGame->isBust()){
+            $this->displayHand($output, $playerGame);
+            $this->displayScore($output, $playerGame);
             $action = $helper->ask($input, $output, $question);
 
             switch($action){
                 case 'stick':
                     break 2;
                 case 'twist':
-                    $game->twist();
-                    $this->displayHand($output, $game);
+                    $playerGame->twist();
                     break;
             }
+            
         }
+        $this->displayScore($output, $playerGame);
 
-        if($game->isBust()){
+        if($playerGame->isBust()){
             $output->writeln('Bust, you lose!');
             return Command::SUCCESS;
         }
 
-        $dealerGame = new Pontoon(new Deck());
+        $dealerGame = new Pontoon($deck);
         while(!$dealerGame->isBust() && $dealerGame->getScore() < 17){
             $dealerGame->twist();
         }
@@ -66,11 +77,11 @@ class Play extends Command
             return Command::SUCCESS;
         }
 
-        if($dealerGame->getScore() > $game->getScore()){
+        if($dealerGame->getScore() > $playerGame->getScore()){
             $output->writeln('Dealer beat your score, with: '.$dealerGame->getScore().', you lose!');
             return Command::SUCCESS;
-        }elseif($dealerGame->getScore() == $game->getScore()){
-            $output->writeln('Dealer matched your socre, you lose! (the house always wins)');
+        }elseif($dealerGame->getScore() == $playerGame->getScore()){
+            $output->writeln('Dealer matched your score, you lose! (the house always wins)');
             return Command::SUCCESS;
         }
 
@@ -85,5 +96,9 @@ class Play extends Command
             $output->writeln(' - ' . (string)$card);
         }
     }
+
+    protected function displayScore(OutputInterface $output, Pontoon $game)
+    {
+        $output->writeln('Your score: '.$game->getScore());
     }
 }
