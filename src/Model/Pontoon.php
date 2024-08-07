@@ -65,10 +65,25 @@ class Pontoon
      */
     public function getScore()
     {
-        if(count($this->scores) > 0){
-            return $this->scores[0];
+        // If no scores, return 0
+        if (empty($this->scores)) {
+            return 0;
         }
-        return 0;
+
+        // Calculate the best score
+        $bestScore = null;
+        foreach ($this->scores as $score) {
+            // If there is a valid score better than the best score, update the best score
+            if($score <= 21 && $score > $bestScore){
+                $bestScore = $score;
+            }
+        }
+
+        // If no valid best score ($bestScore is still null), return the lowest score
+        if ($bestScore === null && !empty($this->scores)) {
+            return min($this->scores);
+        }
+        return $bestScore;
     }
 
     /**
