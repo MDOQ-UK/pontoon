@@ -17,19 +17,25 @@ class Play extends Command
     {
         $this
             // the command description shown when running "php bin/console list"
-            ->setDescription('command description')
+            ->setDescription('Play Pontoon')
             // the command help shown when running the command with the "--help" option
-            ->setHelp('command help')
+            ->setHelp('no arguments needed')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Game started!');
-        $game = new Pontoon(new Deck());
-        $game->twist();
 
-        $this->displayHand($output, $game);
+        // Create a single deck to be used in both the player and the dealer games
+        $deck = new Deck();
+
+        // Create a new game for the player
+        $playerGame = new Pontoon($deck);
+
+        // You start with 2 cards, not one as in the original code
+        $playerGame->twist();
+        $playerGame->twist();
 
         $question = new ChoiceQuestion(
             'Stick or Twist?',
@@ -38,25 +44,28 @@ class Play extends Command
         $question->setErrorMessage('action %s is invalid.');
         $helper = $this->getHelper('question');
 
-        while(!$game->isBust()){
+        while(!$playerGame->isBust()){
+            $this->displayHand($output, $playerGame);
+            $this->displayScore($output, $playerGame);
             $action = $helper->ask($input, $output, $question);
 
             switch($action){
                 case 'stick':
                     break 2;
                 case 'twist':
-                    $game->twist();
-                    $this->displayHand($output, $game);
+                    $playerGame->twist();
                     break;
             }
+            
         }
+        $this->displayScore($output, $playerGame);
 
-        if($game->isBust()){
+        if($playerGame->isBust()){
             $output->writeln('Bust, you lose!');
             return Command::SUCCESS;
         }
 
-        $dealerGame = new Pontoon(new Deck());
+        $dealerGame = new Pontoon($deck);
         while(!$dealerGame->isBust() && $dealerGame->getScore() < 17){
             $dealerGame->twist();
         }
@@ -66,11 +75,11 @@ class Play extends Command
             return Command::SUCCESS;
         }
 
-        if($dealerGame->getScore() > $game->getScore()){
+        if($dealerGame->getScore() > $playerGame->getScore()){
             $output->writeln('Dealer beat your score, with: '.$dealerGame->getScore().', you lose!');
             return Command::SUCCESS;
-        }elseif($dealerGame->getScore() == $game->getScore()){
-            $output->writeln('Dealer matched your socre, you lose! (the house always wins)');
+        }elseif($dealerGame->getScore() == $playerGame->getScore()){
+            $output->writeln('Dealer matched your score, you lose! (the house always wins)');
             return Command::SUCCESS;
         }
 
@@ -80,6 +89,14 @@ class Play extends Command
 
     protected function displayHand(OutputInterface $output, Pontoon $game)
     {
-        $output->writeln('Your hand:  [hand]');
+        $output->writeln('Your hand:');
+        foreach ($game->getHand() as $card) {
+            $output->writeln(' - ' . (string)$card);
+        }
+    }
+
+    protected function displayScore(OutputInterface $output, Pontoon $game)
+    {
+        $output->writeln('Your score: '.$game->getScore());
     }
 }
