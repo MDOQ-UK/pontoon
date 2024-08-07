@@ -80,6 +80,10 @@ class Play extends Command
 
     protected function displayHand(OutputInterface $output, Pontoon $game)
     {
-        $output->writeln('Your hand:  [hand]');
+        $output->writeln('Your hand:');
+        foreach ($game->getHand() as $card) {
+            $output->writeln(' - ' . (string)$card);
+        }
+    }
     }
 }
