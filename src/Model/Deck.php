@@ -60,6 +60,9 @@ class Deck
 
     public function draw()
     {
+        if (empty($this->cards)) {
+            throw new \Exception('Deck is empty');
+        }
         return array_shift($this->cards);
     }
 }
