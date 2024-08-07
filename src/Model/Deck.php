@@ -5,12 +5,12 @@ use Mdoq\Pontoon\Model\Deck\Card;
 
 class Deck
 {
-    public const SUIT_DIAMONS = 'diamonds';
+    public const SUIT_DIAMONDS = 'diamonds';
     public const SUIT_HEARTS = 'hearts';
     public const SUIT_CLUBS = 'clubs';
     public const SUIT_SPADES = 'spades';
     public const SUITS = [
-        self::SUIT_DIAMONS,
+        self::SUIT_DIAMONDS,
         self::SUIT_HEARTS,
         self::SUIT_CLUBS,
         self::SUIT_SPADES,
