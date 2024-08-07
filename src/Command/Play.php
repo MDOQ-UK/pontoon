@@ -80,6 +80,16 @@ class Play extends Command
 
     protected function displayHand(OutputInterface $output, Pontoon $game)
     {
-        $output->writeln('Your hand:  [hand]');
+        $hand = $game->getHand();
+        $displayArray = [];
+
+        foreach ($hand as $card) {
+            $cardInfo = $card->jsonSerialize();
+            array_push($displayArray, $cardInfo);
+        }
+
+        $displayHand = implode(", ", $displayArray);
+
+        $output->writeln("Your hand:  [$displayHand]");
     }
 }
