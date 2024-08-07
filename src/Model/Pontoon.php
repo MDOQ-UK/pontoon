@@ -65,8 +65,20 @@ class Pontoon
      */
     public function getScore()
     {
-        if(count($this->scores) > 0){
-            return $this->scores[0];
+        if(count($this->scores) > 0)
+        {
+            // filter scores for all scores less than or equal to 21
+            $filteredArray = array_filter($this->scores, fn($score) => $score <= 21);
+
+            // if the scores are initialised it will not return to 0 i.e. only increases
+            // if the filtered array is empty then all scores are greater than 21
+            // return any score greater than 21 to show the user is bust
+            // else return the highest filtered score
+            if (empty($filteredArray)) {
+                return $this->scores[0];
+            } else {
+                return max($filteredArray);
+            }
         }
         return 0;
     }

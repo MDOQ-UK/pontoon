@@ -17,16 +17,18 @@ class Play extends Command
     {
         $this
             // the command description shown when running "php bin/console list"
-            ->setDescription('command description')
+            ->setDescription('Play Pontoon')
             // the command help shown when running the command with the "--help" option
-            ->setHelp('command help')
+            ->setHelp('No Arguments Needed')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Game started!');
-        $game = new Pontoon(new Deck());
+
+        $deck = new Deck();
+        $game = new Pontoon($deck);
         $game->twist();
 
         $this->displayHand($output, $game);
@@ -56,7 +58,7 @@ class Play extends Command
             return Command::SUCCESS;
         }
 
-        $dealerGame = new Pontoon(new Deck());
+        $dealerGame = new Pontoon($deck);
         while(!$dealerGame->isBust() && $dealerGame->getScore() < 17){
             $dealerGame->twist();
         }
@@ -80,6 +82,16 @@ class Play extends Command
 
     protected function displayHand(OutputInterface $output, Pontoon $game)
     {
-        $output->writeln('Your hand:  [hand]');
+        $hand = $game->getHand();
+        $displayArray = [];
+
+        foreach ($hand as $card) {
+            $cardInfo = $card->jsonSerialize();
+            array_push($displayArray, $cardInfo);
+        }
+
+        $displayHand = implode(", ", $displayArray);
+
+        $output->writeln("Your hand:  [$displayHand]");
     }
 }

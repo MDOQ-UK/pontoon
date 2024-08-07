@@ -1,6 +1,7 @@
 <?php
 namespace Mdoq\Pontoon\Model;
 
+use Exception;
 use Mdoq\Pontoon\Model\Deck\Card;
 
 class Deck
@@ -60,6 +61,10 @@ class Deck
 
     public function draw()
     {
+        if (empty($this->cards)) {
+            throw new Exception("No more cards left");
+        }
+
         return array_shift($this->cards);
     }
 }
