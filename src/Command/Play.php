@@ -26,7 +26,9 @@ class Play extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Game started!');
-        $game = new Pontoon(new Deck());
+
+        $deck = new Deck();
+        $game = new Pontoon($deck);
         $game->twist();
 
         $this->displayHand($output, $game);
@@ -56,7 +58,7 @@ class Play extends Command
             return Command::SUCCESS;
         }
 
-        $dealerGame = new Pontoon(new Deck());
+        $dealerGame = new Pontoon($deck);
         while(!$dealerGame->isBust() && $dealerGame->getScore() < 17){
             $dealerGame->twist();
         }
