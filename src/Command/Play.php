@@ -17,9 +17,9 @@ class Play extends Command
     {
         $this
             // the command description shown when running "php bin/console list"
-            ->setDescription('command description')
+            ->setDescription('Play Pontoon')
             // the command help shown when running the command with the "--help" option
-            ->setHelp('command help')
+            ->setHelp('No Arguments Needed')
         ;
     }
 
